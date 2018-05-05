@@ -1,0 +1,17 @@
+{
+  "name": "nbc",
+  "version": "1.0.0",
+  "description": "This is simple bot based on Naive Bayes Classifier",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nbc",
+    "chat",
+    "bot"
+  ],
+  "author": "Oleksii Starovoitenko",
+  "license": "ISC",
+  "dependencies": {}
+}
