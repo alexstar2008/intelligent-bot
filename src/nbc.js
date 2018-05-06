@@ -29,7 +29,7 @@ class NBC {
     }
     calculateProbabilityPerClass(className, phrase) {
         //
-        const classProbability = Math.log(this.documents[className].length / this.documentsLen);
+        // const classProbability = Math.log(this.documents[className].length / this.documentsLen);
         // 
         const phraseWords = phrase.split(DELIMETER);
         const wordProbability = phraseWords.reduce((sum, next) => {
@@ -39,22 +39,23 @@ class NBC {
             const prob = Math.log((wordsRepeatedAmount + 1) / (wordsUniqueLen + wordsOfClassAmount));
             return prob + sum;
         }, 0);
-        const total = classProbability + wordProbability;
-        return { className, value: total };
+        // const total = classProbability + wordProbability;
+        const total = wordProbability;
+        return { name: className, prob: total };
     }
     setAmountOfMatches(amountOfResult) {
         this.amountOfResult = amountOfResult;
     }
     getBestMatches(phrase) {
         const classNames = this.getClassNames();
-        const amountOfClasses = classNames.length;
         const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
         const sortedProbabilities = this.sortProbabilities(probabilities);
+        console.log(this);
         return sortedProbabilities.slice(0, this.amountOfResult);
     }
     sortProbabilities(probabilities) {
         probabilities.sort((a, b) => {
-            return b.value - a.value;
+            return b.prob - a.prob;
         });
         return probabilities;
     }

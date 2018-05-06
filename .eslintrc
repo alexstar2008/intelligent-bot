@@ -1,0 +1,23 @@
+{
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": ["error", 4],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+
+        "no-cond-assign": ["error", "always"],
+
+        "no-console": "off",
+        "eol-last": "error",
+        "no-magic-numbers":"off"
+    },
+    "env": {
+        "es6": true,
+        "node": true,
+        "mocha": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 8
+    }
+}

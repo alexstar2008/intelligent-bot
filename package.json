@@ -4,7 +4,8 @@
   "description": "This is simple bot based on Naive Bayes Classifier",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "npm install -g nodemon",
+    "serve": "nodemon app"
   },
   "keywords": [
     "nbc",
@@ -13,5 +14,11 @@
   ],
   "author": "Oleksii Starovoitenko",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "botbuilder": "^3.15.0",
+    "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
 }

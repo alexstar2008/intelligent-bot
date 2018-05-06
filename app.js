@@ -1,11 +1,11 @@
-const NBC = require('./nbc');
+const express = require('express');
+//
+const router = require('./src/router');
+const { port } = require('./config');
 
-const nbc = new NBC();
+const app = express();
+app.use('/api', router);
 
-nbc.train('простуда','кашель насморк');
-nbc.train('грипп','кашель температура ломота');
-nbc.train('аллергия','кашель насморк');
-nbc.setAmountOfMatches(1);
-const res = nbc.getBestMatches('кашель насморк');
-console.log(res);
-// nbc.calculateTotalProb();
+app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
+});
