@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npm install -g nodemon",
+    "start":"node app",
     "serve": "nodemon app"
   },
   "keywords": [
