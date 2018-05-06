@@ -1,8 +1,8 @@
-const DELIMETER = ' ';
+const DELIMETER = ', ';
 
 class NBC {
     constructor() {
-        this.documents = {}
+        this.documents = {};
         this.documentsLen = 0;
 
         this.amountOfResult = 1;
@@ -21,7 +21,7 @@ class NBC {
         if (!this.words[className]) {
             this.words[className] = [];
         }
-        const words = document.split(DELIMETER);
+        const words = document.toLowerCase().split(DELIMETER);
         this.words[className].push(...words);
         words.forEach(word => {
             this.wordsUnique.add(word);
@@ -31,7 +31,7 @@ class NBC {
         //
         // const classProbability = Math.log(this.documents[className].length / this.documentsLen);
         // 
-        const phraseWords = phrase.split(DELIMETER);
+        const phraseWords = phrase.toLowerCase().split(DELIMETER);
         const wordProbability = phraseWords.reduce((sum, next) => {
             const wordsRepeatedAmount = this.words[className].filter(word => word === next).length;
             const wordsUniqueLen = this.wordsUnique.size;
@@ -47,10 +47,11 @@ class NBC {
         this.amountOfResult = amountOfResult;
     }
     getBestMatches(phrase) {
+        console.log(Array.from(this.wordsUnique).sort());
         const classNames = this.getClassNames();
         const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
         const sortedProbabilities = this.sortProbabilities(probabilities);
-        console.log(this);
+
         return sortedProbabilities.slice(0, this.amountOfResult);
     }
     sortProbabilities(probabilities) {
