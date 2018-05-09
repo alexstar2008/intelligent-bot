@@ -16,15 +16,14 @@ async function getDiagnose(text, amount = 1) {
     dishes.slice(1).forEach(dish => {
         nbc.train(dish[0], dish[1]);
     });
-    console.log(nbc.words);
 
     nbc.setAmountOfMatches(amount);
     let receipsNumbers = '';
     const diagnoses = nbc.getBestMatches(text);
-    const dishesStr = '<br>' + diagnoses.map((diagnose, index) => {
+    const dishesStr = '\n\n' + diagnoses.map((diagnose, index) => {
         receipsNumbers += (index + '|');
         return `${index + 1}: ${diagnose.name}: (рецепты)`;
-    }).join('<br>');
+    }).join('\n\n');
     receipsNumbers = receipsNumbers.slice(0, -1);
     return { dishesStr, receipsNumbers };
     // nbc.calculateTotalProb();
