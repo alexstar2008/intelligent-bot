@@ -64,6 +64,7 @@ bot.dialog('options', [function (session) {
 bot.dialog('help', function (session) {
     const msg =
         '**Доступные комманды:**\n\n\n' +
+        '`start` - старт бота\n\n' +
         '`options` - изменить кол-во блюд\n\n' +
         '`help` - вызов помощи\n\n' +
         '`exit` - выход\n\n';
