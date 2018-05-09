@@ -13,7 +13,7 @@ const bot = new builder.UniversalBot(connector, function (session) {
     // session.sendTyping();
     // setTimeout(function(){
     const name = session.message.user.name;
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!2');
     session.beginDialog('recipes');
     // },3000);
 });
@@ -62,40 +62,11 @@ bot.dialog('options', [function (session) {
 });
 
 bot.dialog('help', function (session) {
-    const msg = new builder.Message(session)
-        .addAttachment({
-            contentType: 'application/vnd.microsoft.card.adaptive',
-            content: {
-                type: 'AdaptiveCard',
-                weight: 'bolder',
-                speak: 'Доступные комманды:',
-                body: [
-                    {
-                        'type': 'TextBlock',
-                        'text': 'Доступные комманды',
-                        'weight': 'bold',
-                        'size': 'large'
-                    },
-                    {
-                        'type': 'TextBlock',
-                        'text': 'options - изменить кол-во блюд',
-                    }
-                    ,
-                    {
-                        'type': 'TextBlock',
-                        'text': 'help - вызов помощи',
-                        'title': 'help',
-                        'value': 'Помощь'
-                    },
-                    {
-                        'type': 'TextBlock',
-                        'text': 'exit - выход',
-                        'title': 'help',
-                        'value': 'Помощь'
-                    }
-                ]
-            }
-        });
+    const msg =
+        '**Доступные комманды:**\n\n\n' +
+        '`options` - изменить кол-во блюд\n\n' +
+        '`help` - вызов помощи\n\n' +
+        '`exit` - выход\n\n';
     session.send(msg);
 }).triggerAction({
     matches: /^help$/i
@@ -104,7 +75,8 @@ bot.dialog('help', function (session) {
 
 bot.dialog('exit', function (session) {
     // builder.Prompts.confirm(session, 'Вы точно хотете выйти?');
-    session.endConversation('Прощайте! Успешных Вам кулинарных экспериментов');
+    const name = session.message.user.name;
+    session.endConversation('Прощай,' + name[0].toUpperCase() + name.slice(1) + '! Успешных Вам кулинарных экспериментов');
 }).triggerAction({
     matches: /^exit$/i
 });
