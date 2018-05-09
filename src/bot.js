@@ -13,7 +13,7 @@ const bot = new builder.UniversalBot(connector, function (session) {
     // session.sendTyping();
     // setTimeout(function(){
     const name = session.message.user.name;
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!2');
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
     session.beginDialog('recipes');
     // },3000);
 });
@@ -55,7 +55,7 @@ bot.dialog('options', [function (session) {
 }, function (session, results) {
     if (results.response) {
         session.sessionState.dishAmount = results.response;
-        session.beginDialog('/');
+        session.beginDialog('recipes');
     }
 }]).triggerAction({
     matches: /^options$/i
@@ -68,6 +68,7 @@ bot.dialog('help', function (session) {
         '`help` - вызов помощи\n\n' +
         '`exit` - выход\n\n';
     session.send(msg);
+    session.beginDialog('recipes');
 }).triggerAction({
     matches: /^help$/i
 });
