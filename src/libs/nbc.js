@@ -54,11 +54,10 @@ class NBC {
         });
     }
     getBestMatches(phrase) {
-        // console.log(Array.from(this.wordsUnique).sort());
         const classNames = this.getClassNames();
         const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
         const sortedProbabilities = this.sortProbabilities(probabilities);
-        const filteredProbabilities = this.filterIfNoMatches(sortedProbabilities,phrase);
+        const filteredProbabilities = this.filterIfNoMatches(sortedProbabilities, phrase);
         //: TODO 
         return filteredProbabilities.slice(0, this.amountOfResult);
     }
@@ -71,14 +70,6 @@ class NBC {
     getClassNames() {
         return Object.keys(this.documents);
     }
-    // calculateTotalProb() {
-    //     const prob1 = 1 / (1 + Math.exp(this.probs['простуда'] - this.probs['грипп']) + Math.exp(this.probs['аллергия'] - this.probs['грипп']));
-    //     const prob2 = 1 / (1 + Math.exp(this.probs['грипп'] - this.probs['простуда']) + Math.exp(this.probs['аллергия'] - this.probs['простуда']));
-    //     const prob3 = 1 / (1 + Math.exp(this.probs['простуда'] - this.probs['аллергия']) + Math.exp(this.probs['грипп'] - this.probs['аллергия']))
-    //     // console.log(prob1);
-    //     // console.log(prob2);
-    //     // console.log(prob3);
-    // }
 }
 
 module.exports = NBC;

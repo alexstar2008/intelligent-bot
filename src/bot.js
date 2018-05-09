@@ -10,43 +10,29 @@ const connector = new builder.ChatConnector({
 });
 
 const bot = new builder.UniversalBot(connector, function (session) {
-    // session.sendTyping();
-    // setTimeout(function(){
     const name = session.message.user.name;
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
-    session.beginDialog('recipes');
-    // },3000);
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (help - помощь)');
+    session.beginDialog('dishes');
 });
 
 
 bot.dialog('greeting', function (session) {
     const name = session.message.user.name;
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
-    session.beginDialog('recipes');
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (help - помощь)');
+    session.beginDialog('dishes');
 }).triggerAction({
     matches: /^\/start$/i
 });
 
 
-
-// bot.on('conversationUpdate', function (message) {
-//     if (message.membersAdded[0].id === message.address.bot.id) {
-//         const reply = new builder.Message().address(message.address).text('Добро пожаловать в наш кулинарный мир!');
-//         bot.send(reply);
-//     }
-// });
-
-
-
-bot.dialog('recipes', [function (session) {
+bot.dialog('dishes', [function (session) {
     builder.Prompts.text(session, 'Опишите доступные ингредиенты в формате: `яйца, соль`');
 }, async function (session) {
     const dishAmount = session.sessionState.dishAmount;
-    const { dishesStr, receipsNumbers } = await controller.getDiagnose(session.message.text, dishAmount);
+    const searchRecipe = session.sessionState.searchRecipe;
+    const dishesStr = await controller.getDishes(session.message.text, dishAmount, searchRecipe);
     session.send(`Варианты блюд: ${dishesStr}`);
-    // builder.Prompts.choice(session, 'Введите номер блюда для поиска', receipsNumbers);
-}, function (session, results) {
-    console.log(results.response);
+}, function (session) {
     session.endDialog();
 }]);
 
@@ -55,10 +41,22 @@ bot.dialog('options', [function (session) {
 }, function (session, results) {
     if (results.response) {
         session.sessionState.dishAmount = results.response;
-        session.beginDialog('recipes');
+        session.beginDialog('dishes');
     }
 }]).triggerAction({
     matches: /^options$/i
+});
+
+bot.dialog('recipe', function (session) {
+    if (session.sessionState.searchRecipe === undefined) {
+        session.sessionState.searchRecipe = true;
+    }
+    session.sessionState.searchRecipe = !session.sessionState.searchRecipe;
+    const msg = session.sessionState.searchRecipe ? 'Поиск рецептов включен' : 'Поиск рецептов отключен';
+    session.send(msg);
+    session.beginDialog('dishes');
+}).triggerAction({
+    matches: /^recipe$/i
 });
 
 bot.dialog('help', function (session) {
@@ -66,19 +64,18 @@ bot.dialog('help', function (session) {
         '**Доступные комманды:**\n\n\n' +
         '`start` - старт бота\n\n' +
         '`options` - изменить кол-во блюд\n\n' +
+        '`recipe` - вкл./выкл. поиск рецепта для блюд\n\n' +
         '`help` - вызов помощи\n\n' +
         '`exit` - выход\n\n';
     session.send(msg);
-    session.beginDialog('recipes');
+    session.beginDialog('dishes');
 }).triggerAction({
     matches: /^help$/i
 });
 
-
 bot.dialog('exit', function (session) {
-    // builder.Prompts.confirm(session, 'Вы точно хотете выйти?');
     const name = session.message.user.name;
-    session.endConversation('Прощай,' + name[0].toUpperCase() + name.slice(1) + '! Успешных Вам кулинарных экспериментов');
+    session.endConversation('Прощай, ' + name[0].toUpperCase() + name.slice(1) + '! Успешных Вам кулинарных экспериментов');
 }).triggerAction({
     matches: /^exit$/i
 });

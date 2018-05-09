@@ -5,7 +5,7 @@ const OAuth2Client = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 const TOKEN_PATH = 'credentials.json';
 
-const config = require('../../config');
+const config = require('../../../config');
 
 
 /**
