@@ -46,14 +46,21 @@ class NBC {
     setAmountOfMatches(amountOfResult) {
         this.amountOfResult = amountOfResult;
     }
+    filterIfNoMatches(probabilities, phrase) {
+        return probabilities.filter(probability => {
+            const name = probability.name;
+            const ingredients = this.words[name];
+            return ingredients.some(ingredient => phrase.includes(ingredient));
+        });
+    }
     getBestMatches(phrase) {
         // console.log(Array.from(this.wordsUnique).sort());
         const classNames = this.getClassNames();
         const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
         const sortedProbabilities = this.sortProbabilities(probabilities);
-
+        const filteredProbabilities = this.filterIfNoMatches(sortedProbabilities,phrase);
         //: TODO 
-        return sortedProbabilities.slice(0, this.amountOfResult);
+        return filteredProbabilities.slice(0, this.amountOfResult);
     }
     sortProbabilities(probabilities) {
         probabilities.sort((a, b) => {

@@ -12,24 +12,29 @@ const connector = new builder.ChatConnector({
 const bot = new builder.UniversalBot(connector, function (session) {
     // session.sendTyping();
     // setTimeout(function(){
+    console.log(session);
+    const name = session.message.user.name;
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
     session.beginDialog('recipes');
     // },3000);
 });
-bot.on('conversationUpdate', function (message) {
-    if (message.membersAdded[0].id === message.address.bot.id) {
-        const reply = new builder.Message().address(message.address).text('Добро пожаловать в наш кулинарный мир!');
-        bot.send(reply);
-    }
-});
+// bot.on('conversationUpdate', function (message) {
+//     if (message.membersAdded[0].id === message.address.bot.id) {
+//         const reply = new builder.Message().address(message.address).text('Добро пожаловать в наш кулинарный мир!');
+//         bot.send(reply);
+//     }
+// });
+
+
 
 bot.dialog('recipes', [function (session) {
     builder.Prompts.text(session, 'Опишите доступные ингредиенты в формате: `яйца, соль`');
 }, async function (session) {
     const dishAmount = session.sessionState.dishAmount;
-    const {dishesStr,receipsNumbers} = await controller.getDiagnose(session.message.text, dishAmount);
+    const { dishesStr, receipsNumbers } = await controller.getDiagnose(session.message.text, dishAmount);
     session.send(`Варианты блюд: ${dishesStr}`);
-    // builder.Prompts.choice(session, "Введите номер блюда для поиска", receipsNumbers);
-}, function (session,results) {
+    // builder.Prompts.choice(session, 'Введите номер блюда для поиска', receipsNumbers);
+}, function (session, results) {
     console.log(results.response);
     session.endDialog();
 }]);
@@ -45,9 +50,50 @@ bot.dialog('options', [function (session) {
     matches: /^options$/i
 });
 
+bot.dialog('help', function (session) {
+    const msg = new builder.Message(session)
+        .addAttachment({
+            contentType: 'application/vnd.microsoft.card.adaptive',
+            content: {
+                type: 'AdaptiveCard',
+                weight: 'bolder',
+                speak: 'Доступные комманды:',
+                body: [
+                    {
+                        'type': 'TextBlock',
+                        'text': 'Доступные комманды',
+                        'weight': 'bold',
+                        'size': 'large'
+                    },
+                    {
+                        'type': 'TextBlock',
+                        'text': 'options - изменить кол-во блюд',
+                    }
+                    ,
+                    {
+                        'type': 'TextBlock',
+                        'text': 'help - вызов помощи',
+                        'title': 'help',
+                        'value': 'Помощь'
+                    },
+                    {
+                        'type': 'TextBlock',
+                        'text': 'exit - выход',
+                        'title': 'help',
+                        'value': 'Помощь'
+                    }
+                ]
+            }
+        });
+    session.send(msg);
+}).triggerAction({
+    matches: /^help$/i
+});
+
+
 bot.dialog('exit', function (session) {
     // builder.Prompts.confirm(session, 'Вы точно хотете выйти?');
-    session.endConversation('Прощавайте! Успешных Вам кулинарных экспериментов');
+    session.endConversation('Прощайте! Успешных Вам кулинарных экспериментов');
 }).triggerAction({
     matches: /^exit$/i
 });
