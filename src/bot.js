@@ -12,12 +12,23 @@ const connector = new builder.ChatConnector({
 const bot = new builder.UniversalBot(connector, function (session) {
     // session.sendTyping();
     // setTimeout(function(){
-    console.log(session);
     const name = session.message.user.name;
     session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
     session.beginDialog('recipes');
     // },3000);
 });
+
+
+bot.dialog('greeting', function (session) {
+    const name = session.message.user.name;
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!');
+    session.beginDialog('recipes');
+}).triggerAction({
+    matches: /^\/start$/i
+});
+
+
+
 // bot.on('conversationUpdate', function (message) {
 //     if (message.membersAdded[0].id === message.address.bot.id) {
 //         const reply = new builder.Message().address(message.address).text('Добро пожаловать в наш кулинарный мир!');
