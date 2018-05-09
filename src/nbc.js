@@ -47,11 +47,12 @@ class NBC {
         this.amountOfResult = amountOfResult;
     }
     getBestMatches(phrase) {
-        console.log(Array.from(this.wordsUnique).sort());
+        // console.log(Array.from(this.wordsUnique).sort());
         const classNames = this.getClassNames();
         const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
         const sortedProbabilities = this.sortProbabilities(probabilities);
 
+        //: TODO 
         return sortedProbabilities.slice(0, this.amountOfResult);
     }
     sortProbabilities(probabilities) {

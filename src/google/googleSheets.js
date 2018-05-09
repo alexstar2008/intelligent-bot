@@ -69,7 +69,6 @@ async function getDishes(auth) {
                 reject(err);
             }
             const raws = data.values;
-            console.log(raws);
             resolve(raws);
         });
     });

@@ -1,40 +1,36 @@
 const NBC = require('./nbc');
 
+const googleSheets = require('./google/googleSheets');
+const googleSearch = require('./search-google');
+
+async function searchforReceipt() {
+    const res = await googleSearch.search('бастурма рецепт');
+    return res;
+}
 
 
-function getDiagnose(text, amount = 1) {
+async function getDiagnose(text, amount = 1) {
     const nbc = new NBC();
 
-    nbc.train('Бисквит', 'яйца, мука, сахар, соль');
-    nbc.train('Салат', 'огурцы, помидоры, капуста, масло подсолнечное');
-    nbc.train('Яичница', 'яйца, масло');
-    nbc.train('Бургер', 'булочка, мясной фарш, помидоры, салат, майонез, кетчуп, горчица');
-    nbc.train('Пельмени', 'мука, яйца, вода, масло, мясной фарш');
-    nbc.train('Плов', 'рис, вода, специи, масло, морковка, лук');
-    nbc.train('Оладьи', 'Яйца, кефир, мука, сода, сахар, соль');
-    nbc.train('Макароны по-флотски', 'Макароны, вода, соль, мясной фарш');
-    nbc.train('Борщ', 'Вода, картошка, морковка, свекла, капуста, лук, масло, свинина');
-    nbc.train('Вареники с картошкой', 'Вода, мука, картошка отварная, лук');
-    nbc.train('Паназийская лапша', 'Рисовая лапша, морковка, болгарский перец, лук, куриное филе, чеснок, соевый соус');
-    nbc.train('Суши', 'Рис, огурцы, крем-сыр, рыба, нори');
-    nbc.train('Шаурма', 'Лаваш, майонез, кетчуп, капуста, огурцы, помидоры, жаренное мясо');
-    nbc.train('Желе', 'Желатин, сок, фрукты, вода');
-    nbc.train('Пицца "Маргарита"', 'Булочка, томатная паста, сыр "Моцарелла", базилик');
-    nbc.train('Котлета по-киевски', 'Филе куринное, масло, специи, сухари панировочные, соль, масло подсолнечное');
-    nbc.train('Оливье', 'Колбаса, картошка, огурцы, яйца, майонез, горошек');
+    const dishes = await googleSheets.init();
+    dishes.slice(1).forEach(dish => {
+        nbc.train(dish[0], dish[1]);
+    });
+    console.log(nbc.words);
 
     nbc.setAmountOfMatches(amount);
-    console.log(text);
-
+    let receipsNumbers = '';
     const diagnoses = nbc.getBestMatches(text);
-    const diagnoseStr = diagnoses.map((diagnose, index) => {
-        return `${index + 1}: ${diagnose.name}`;
-    }).join('\n');
-    console.log(diagnoseStr);
-    return diagnoseStr;
+    const dishesStr = '<br>' + diagnoses.map((diagnose, index) => {
+        receipsNumbers += (index + '|');
+        return `${index + 1}: ${diagnose.name}: (рецепты)`;
+    }).join('<br>');
+    receipsNumbers = receipsNumbers.slice(0, -1);
+    return { dishesStr, receipsNumbers };
     // nbc.calculateTotalProb();
 }
 
 module.exports = {
-    getDiagnose
+    getDiagnose,
+    searchforReceipt
 };

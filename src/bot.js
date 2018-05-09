@@ -19,35 +19,23 @@ bot.on('conversationUpdate', function (message) {
     if (message.membersAdded[0].id === message.address.bot.id) {
         const reply = new builder.Message().address(message.address).text('Добро пожаловать в наш кулинарный мир!');
         bot.send(reply);
-    } else if (message.membersRemoved) {
-        // See if bot was removed
-        var botId = message.address.bot.id;
-        for (var i = 0; i < message.membersRemoved.length; i++) {
-            if (message.membersRemoved[i].id === botId) {
-                // Say goodbye
-                var reply = new builder.Message()
-                    .address(message.address)
-                    .text("Goodbye");
-                bot.send(reply);
-                break;
-            }
-        }
     }
-    console.log('REMOVED');
 });
+
 bot.dialog('recipes', [function (session) {
-    // session.send(`Your mood: ${mood}`);
-    // session.beginDialog('/');
     builder.Prompts.text(session, 'Опишите доступные ингредиенты в формате: `яйца, соль`');
-}, async function (session, res) {
+}, async function (session) {
     const dishAmount = session.sessionState.dishAmount;
-    const diagnose = controller.getDiagnose(session.message.text, dishAmount);
-    session.send(`Варианты блюд: ${diagnose}`);
-}, function (session, res) {
+    const {dishesStr,receipsNumbers} = await controller.getDiagnose(session.message.text, dishAmount);
+    session.send(`Варианты блюд: ${dishesStr}`);
+    // builder.Prompts.choice(session, "Введите номер блюда для поиска", receipsNumbers);
+}, function (session,results) {
+    console.log(results.response);
     session.endDialog();
 }]);
+
 bot.dialog('options', [function (session) {
-    builder.Prompts.number(session, 'Введите колличество блюд');
+    builder.Prompts.number(session, 'Введите колличество блюд:');
 }, function (session, results) {
     if (results.response) {
         session.sessionState.dishAmount = results.response;
@@ -56,11 +44,12 @@ bot.dialog('options', [function (session) {
 }]).triggerAction({
     matches: /^options$/i
 });
+
 bot.dialog('exit', function (session) {
+    // builder.Prompts.confirm(session, 'Вы точно хотете выйти?');
     session.endConversation('Прощавайте! Успешных Вам кулинарных экспериментов');
 }).triggerAction({
-    matches: /^exit$/i,
-    confirmPrompt: 'Вы точно хоитете выйти?'
+    matches: /^exit$/i
 });
 
 
