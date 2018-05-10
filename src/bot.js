@@ -26,7 +26,7 @@ bot.dialog('greeting', function (session) {
 
 
 bot.dialog('dishes', [function (session) {
-    builder.Prompts.text(session, 'Опишите доступные ингредиенты в формате: `яйца, соль`');
+    builder.Prompts.text(session, 'Опишите доступные ингредиенты в формате: `мука, яйца`');
 }, async function (session) {
     const dishAmount = session.sessionState.dishAmount;
     const searchRecipe = session.sessionState.searchRecipe;
