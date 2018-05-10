@@ -11,14 +11,14 @@ const connector = new builder.ChatConnector({
 
 const bot = new builder.UniversalBot(connector, function (session) {
     const name = session && session.message && session.message.user && session.message.user.name || 'user';
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (help - помощь)');
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (`help` - помощь)');
     session.beginDialog('dishes');
 });
 
 
 bot.dialog('greeting', function (session) {
     const name = session.message.user.name;
-    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (help - помощь)');
+    session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (`help` - помощь)');
     session.beginDialog('dishes');
 }).triggerAction({
     matches: /^\/start$/i
