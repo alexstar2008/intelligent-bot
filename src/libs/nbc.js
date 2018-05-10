@@ -27,11 +27,11 @@ class NBC {
             this.wordsUnique.add(word);
         });
     }
-    calculateProbabilityPerClass(className, phrase) {
+    calculateProbabilityPerClass(className) {
         //
         // const classProbability = Math.log(this.documents[className].length / this.documentsLen);
         // 
-        const phraseWords = phrase.toLowerCase().split(DELIMETER);
+        const phraseWords = this.phrase.split(DELIMETER);
         const wordProbability = phraseWords.reduce((sum, next) => {
             const wordsRepeatedAmount = this.words[className].filter(word => word === next).length;
             const wordsUniqueLen = this.wordsUnique.size;
@@ -46,18 +46,19 @@ class NBC {
     setAmountOfMatches(amountOfResult) {
         this.amountOfResult = amountOfResult;
     }
-    filterIfNoMatches(probabilities, phrase) {
+    filterIfNoMatches(probabilities) {
         return probabilities.filter(probability => {
             const name = probability.name;
             const ingredients = this.words[name];
-            return ingredients.some(ingredient => phrase.includes(ingredient));
+            return ingredients.some(ingredient => this.phrase.includes(ingredient));
         });
     }
     getBestMatches(phrase) {
+        this.phrase = phrase.toLowerCase();
         const classNames = this.getClassNames();
-        const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className, phrase));
+        const probabilities = classNames.map(className => this.calculateProbabilityPerClass(className));
         const sortedProbabilities = this.sortProbabilities(probabilities);
-        const filteredProbabilities = this.filterIfNoMatches(sortedProbabilities, phrase);
+        const filteredProbabilities = this.filterIfNoMatches(sortedProbabilities);
         //: TODO 
         return filteredProbabilities.slice(0, this.amountOfResult);
     }

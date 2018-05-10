@@ -10,7 +10,7 @@ const connector = new builder.ChatConnector({
 });
 
 const bot = new builder.UniversalBot(connector, function (session) {
-    const name = session.message.user.name;
+    const name = session && session.message && session.message.user && session.message.user.name || 'user';
     session.send(name[0].toUpperCase() + name.slice(1) + ', Добро пожаловать в наш кулинарный мир!\n\n (help - помощь)');
     session.beginDialog('dishes');
 });
@@ -74,7 +74,7 @@ bot.dialog('help', function (session) {
 });
 
 bot.dialog('exit', function (session) {
-    const name = session.message.user.name;
+    const name = session && session.message && session.message.user && session.message.user.name || 'user';
     session.endConversation('Прощай, ' + name[0].toUpperCase() + name.slice(1) + '! Успешных Вам кулинарных экспериментов');
 }).triggerAction({
     matches: /^exit$/i
